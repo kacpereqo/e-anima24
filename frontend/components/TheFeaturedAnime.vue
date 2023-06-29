@@ -20,43 +20,103 @@
       <img :src="imageUrl" />
     </div>
     <div class="dots" ref="dots">
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+      <div
+        v-for="idx in [1, 2, 3, 4, 5]"
+        class="dot"
+        :key="idx"
+        @click="changeCarouselTo(idx - 1)"
+      ></div>
     </div>
-    <div class="progress-bar"></div>
+    <div class="progress-bar" ref="progressBar"></div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { LoremIpsum } from "lorem-ipsum";
+
 const description = ref(
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti numquam dolorum repellat veritatis omnis odio modi praesentium earum assumenda voluptates id delectus soluta veniam distinctio, exercitationem cupiditate facilis est neque."
 );
-const title = ref("Featured Anime");
-const imageUrl = ref("");
-const counter = ref(0);
-const dots = ref(null);
+const title = ref<string>("Featured Anime");
+const imageUrl = ref<string>("https://picsum.photos/1080/720");
+const counter = ref<number>(0);
+
+const progressBar = ref<HTMLElement | null>(null);
+const dots = ref<HTMLElement | null>(null);
+
+let carouselInterval: any = null;
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4,
+  },
+  wordsPerSentence: {
+    max: 16,
+    min: 4,
+  },
+});
+
+function changeCarouselTo(idx: number) {
+  clearTimeout(carouselInterval);
+  counter.value = idx;
+
+  colorDots();
+  getInfo();
+  clearProgressBar();
+
+  changeFeaturedAnime();
+}
+
+function clearProgressBar() {
+  if (!progressBar.value) return;
+
+  progressBar.value.classList.remove("loading-animation");
+  setTimeout(() => {
+    if (!progressBar.value) return;
+    progressBar.value.classList.add("loading-animation");
+  }, 1);
+}
+
+function colorDots() {
+  if (!dots.value) return;
+  const dotsArray = Array.from(dots.value.children);
+  dotsArray.forEach((dot, index) => {
+    if (index === counter.value) {
+      dot.classList.add("active");
+    } else {
+      dot.classList.remove("active");
+    }
+  });
+}
+
+function getInfo() {
+  imageUrl.value = "https://picsum.photos/1080/720?random=" + Math.random();
+  title.value = lorem.generateWords(1);
+  description.value = lorem.generateSentences(2);
+}
 
 function changeFeaturedAnime() {
-  imageUrl.value = "https://picsum.photos/1080/720?random=" + Math.random();
-  title.value = "Featured Anime " + Math.random();
-  description.value =
-    "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti numquam dolorum repellat veritatis omnis odio modi praesentium earum assumenda voluptates id delectus soluta veniam distinctio, exercitationem cupiditate facilis est neque.";
+  carouselInterval = setTimeout(() => {
+    if (!dots.value) return;
+    if (!progressBar.value) return;
 
-  counter.value = (counter.value + 1) % dots.value.children.length;
-  dots.value.children[counter.value].classList.add("active");
-  //   counter.value = counter.value % dots.value.children.length;
-  //   dots.value.children.forEach((dot, index) => {
-  //     if (index === counter.value) {
-  //       dot.classList.add("active");
-  //     } else {
-  //       dot.classList.remove("active");
-  //     }
-  //   });
+    counter.value = (counter.value + 1) % dots.value.children.length;
+
+    getInfo();
+    colorDots();
+    clearProgressBar();
+    changeFeaturedAnime();
+  }, 3 * 1000);
 }
 
 onMounted(() => {
-  const carousel = setInterval(changeFeaturedAnime, 3000);
+  if (!progressBar.value) return;
+  if (!dots.value) return;
+
+  progressBar.value.classList.add("loading-animation");
+  dots.value.children[0].classList.add("active");
+  changeFeaturedAnime();
 });
 </script>
 
@@ -73,7 +133,10 @@ onMounted(() => {
   width: 0%;
   height: 0.3rem;
   background-color: var(--accent-color);
-  animation: loading 3s linear infinite;
+}
+
+.loading-animation {
+  animation: loading 3s linear forwards;
 }
 
 @keyframes loading {
@@ -95,7 +158,6 @@ onMounted(() => {
 
 .dots {
   position: absolute;
-
   left: 50%;
   transform: translateX(-50%);
   bottom: 10px;
@@ -106,6 +168,8 @@ onMounted(() => {
 }
 
 .dot {
+  box-sizing: content-box;
+  cursor: pointer;
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
@@ -122,7 +186,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 1rem;
   position: absolute;
-  top: 25%;
+  bottom: 40%;
   left: 5%;
   max-width: 35rem;
 }
