@@ -1,0 +1,16 @@
+:root{
+    --major-color: #1a202c;
+    --second-color: #171923;
+    --font-color: #e2e8f0;
+
+    --font-size-1: 1.2rem;
+    --font-size-2: 1.4rem;
+    --font-size-3: 1.6rem;
+    --font-size-4: 1.8rem;
+    --font-size-5: 2.0rem;
+    --font-size-6: 2.2rem;
+    --font-size-7: 2.4rem;
+    --font-size-8: 2.6rem;
+
+    --navbar-height: 6rem;
+}
