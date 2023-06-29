@@ -1,7 +1,7 @@
 <template>
   <nav id="navbar">
     <div class="logo">
-      <img src="@/public/logo.png" />
+      <img src="@/assets/logo.png" />
       <h1>e-anima24</h1>
     </div>
 
