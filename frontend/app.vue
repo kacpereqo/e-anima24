@@ -20,6 +20,7 @@ html {
 }
 
 #app {
+  overflow-x: hidden;
   font-family: "Inter", sans-serif;
   color: var(--font-color);
   font-size: var(--font-size-2);

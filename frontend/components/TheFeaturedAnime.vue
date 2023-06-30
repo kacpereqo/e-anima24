@@ -17,7 +17,7 @@
           </button>
         </div>
       </div>
-      <img :src="imageUrl" />
+      <nuxt-img :src="imageUrl" preload />
     </div>
     <div class="dots" ref="dots">
       <div
@@ -107,7 +107,7 @@ function changeFeaturedAnime() {
     colorDots();
     clearProgressBar();
     changeFeaturedAnime();
-  }, 3 * 1000);
+  }, 12 * 1000);
 }
 
 onMounted(() => {
@@ -136,7 +136,7 @@ onMounted(() => {
 }
 
 .loading-animation {
-  animation: loading 3s linear forwards;
+  animation: loading 12s linear forwards;
 }
 
 @keyframes loading {
