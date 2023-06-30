@@ -1,13 +1,21 @@
 <template>
   <div class="default-layout">
     <TheNavbar />
-    <slot />
+    <div class="slot">
+      <slot />
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style>
 .default-layout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.slot {
+  display: flex;
+  flex: 1;
 }
 </style>

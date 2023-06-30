@@ -28,6 +28,7 @@
   justify-content: space-between;
   position: relative;
   align-items: center;
+  z-index: 1000;
 }
 
 ul {
