@@ -1,5 +1,6 @@
 :root{
     --major-color: #1a202c;
+    --major-color--light: #202938;
 
     --second-color: #171923;
     --second-color--opacity: rgba(23, 25, 35,0.8);

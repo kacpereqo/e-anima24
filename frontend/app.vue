@@ -25,7 +25,6 @@ html {
   color: var(--font-color);
   font-size: var(--font-size-2);
   min-height: 100vh;
-  height: 100%;
   width: 100%;
   background-color: var(--major-color);
 }
