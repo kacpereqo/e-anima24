@@ -1,7 +1,15 @@
 :root{
     --major-color: #1a202c;
+    --major-color--light: #202938;
+
     --second-color: #171923;
+    --second-color--opacity: rgba(23, 25, 35,0.8);
+
+    --accent-color: #38a169;
+    --accent-color--opacity: rgba(56, 161, 105, 0.8);
+
     --font-color: #e2e8f0;
+    --font-color--dark: #74767a;
 
     --font-size-1: 1.2rem;
     --font-size-2: 1.4rem;
@@ -11,6 +19,8 @@
     --font-size-6: 2.2rem;
     --font-size-7: 2.4rem;
     --font-size-8: 2.6rem;
+    --font-size-9: 2.8rem;
+    --font-size-10:3.0rem;
 
     --navbar-height: 6rem;
 }
