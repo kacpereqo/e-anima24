@@ -11,6 +11,7 @@
 
 <style scoped>
 .index-page {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 3rem;

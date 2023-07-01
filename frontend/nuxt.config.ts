@@ -4,5 +4,12 @@ export default defineNuxtConfig({
     modules: [
       '@nuxt/image',
       "nuxt-icon"
-    ]
+    ],
+    components: [
+
+      {
+        path: "~/components/steps",
+      },
+      "~/components",
+    ],
 })
