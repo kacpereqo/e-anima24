@@ -9,9 +9,7 @@
       ></div>
     </div>
     <div class="add-form">
-      <div class="form">
-        <component :is="steps[currentStep]" />
-      </div>
+      <component :is="steps[currentStep]" />
       <div class="buttons">
         <button
           :disabled="currentStep === 0"
@@ -59,8 +57,27 @@ const progress = ref<HTMLElement | null>(null);
   gap: 2rem;
 }
 
-.form {
+form {
   flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+form :deep(textarea) {
+  resize: none;
+}
+
+form :deep(.input) {
+  padding: 0.5rem;
+  border-radius: 0.2rem;
+  border: none;
+  background-color: var(--major-color--light);
+  color: var(--font-color);
+  font-size: var(--font-size-3);
 }
 .steps {
   display: flex;
@@ -124,6 +141,5 @@ const progress = ref<HTMLElement | null>(null);
   flex-direction: column;
   background-color: var(--second-color);
   width: 50%;
-  height: 20rem;
 }
 </style>

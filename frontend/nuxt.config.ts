@@ -3,7 +3,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
     modules: [
       '@nuxt/image',
-      "nuxt-icon"
+      "nuxt-icon",
+      "@pinia/nuxt"
     ],
     components: [
 
