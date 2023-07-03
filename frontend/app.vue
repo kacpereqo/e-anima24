@@ -6,6 +6,25 @@
   </div>
 </template>
 
+<script setup lang="ts">
+onMounted(() => {
+  window.addEventListener(
+    "keydown",
+    function (e: any) {
+      if (
+        e.keyIdentifier == "U+000A" ||
+        e.keyIdentifier == "Enter" ||
+        e.keyCode == 13
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    },
+    true
+  );
+});
+</script>
+
 <style>
 @import url("assets/variables.css");
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap");

@@ -4,12 +4,16 @@ export default defineNuxtConfig({
     modules: [
       '@nuxt/image',
       "nuxt-icon",
-      "@pinia/nuxt"
+      "@pinia/nuxt",
+      '@vueuse/nuxt',
     ],
     components: [
 
       {
         path: "~/components/steps",
+      },
+      {
+        path: "~/components/common",
       },
       "~/components",
     ],

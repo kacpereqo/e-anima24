@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-const currentStep = ref(0);
+const currentStep = ref(1);
 const steps = [
   defineAsyncComponent(() => import("../components/steps/Step1.vue")),
   defineAsyncComponent(() => import("../components/steps/Step2.vue")),
@@ -46,6 +46,15 @@ const progress = ref<HTMLElement | null>(null);
 </script>
 
 <style scoped>
+form:deep(label) {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+form:deep(input:disabled) {
+  cursor: not-allowed;
+}
 .add-page {
   position: absolute;
   top: 10rem;

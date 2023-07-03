@@ -17,8 +17,12 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
+    "@vueuse/nuxt": "^10.2.1",
     "gsap": "^3.12.2",
     "lorem-ipsum": "^2.0.8",
     "pinia": "^2.1.4"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
