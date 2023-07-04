@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete" ref="autocomplete">
     <div
-      v-for="(selected, idx) in modelValue"
+      v-for="(selected, idx) in props.selecteds"
       :key="idx"
       class="selected"
       @click="selecteds.splice(idx, 1)"
@@ -11,6 +11,7 @@
     <input
       class="form-control"
       type="store.series"
+      v-model="text"
       @click.stop.prevent="show = true"
       @input="inputHandler"
       @keydown.backspace="backspaceHandler"
@@ -18,11 +19,7 @@
       @keydown.down="active++ && active >= matches.length && (active = 0)"
       @keydown.up="active-- && active < 0 && (active = matches.length - 1)"
     />
-    <ul
-      class="dropdown-menu"
-      v-if="store.series.length !== 0 && show"
-      @click.stop
-    >
+    <ul class="dropdown-menu" v-if="show" @click.stop>
       <li
         v-for="(suggestion, idx) in matches"
         @click="setMatch(suggestion)"
@@ -43,22 +40,20 @@
 </template>
 
 <script setup lang="ts">
-import { useAddAnimeFormStore } from "@/stores/addAnimeStore";
-
 const props = defineProps<{
   data: string[];
   addText?: {
     first: string;
     second: string;
   };
-  modelValue: string[];
+  selecteds: string[];
 }>();
 
 const emits = defineEmits<{
-  (e: "update:modelValue", value: string[]): void;
+  (e: "update:props.selecteds", value: string[]): void;
 }>();
 
-const selecteds = ref(["niga"] as string[]);
+const text = ref("");
 const active = ref(-1);
 const matches = ref([] as string[]);
 const show = ref(false);
@@ -76,22 +71,24 @@ function enterHandler() {
 }
 
 function backspaceHandler() {
-  if (store.series.length === 0 && selecteds.value.length > 0) {
-    selecteds.value.pop();
+  if (props.selecteds.length > 0 && text.value.length === 0) {
+    props.selecteds.pop();
   }
 }
 
 function inputHandler() {
-  if (store.series.length > 0) {
+  if (text.value.length > 0) {
     matches.value = props.data.filter((item) => {
-      return item.toLowerCase().indexOf(store.series.toLowerCase()) > -1;
+      return item.toLowerCase().indexOf(text.value.toLocaleLowerCase()) > -1;
     });
   } else {
     matches.value = [];
   }
 }
 function setMatch(value: string) {
-  modelValue.push(value);
+  text.value = "";
+  props.selecteds.push(value);
+  emits("update:props.selecteds", props.selecteds);
   matches.value = [];
 }
 </script>

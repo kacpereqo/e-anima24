@@ -9,7 +9,6 @@
       ></div>
     </div>
     <div class="add-form">
-      <component :is="steps[currentStep]" />
       <div class="buttons">
         <button
           :disabled="currentStep === 0"
@@ -28,6 +27,7 @@
           <Icon name="material-symbols:arrow-forward-rounded" />
         </button>
       </div>
+      <component :is="steps[currentStep]" />
     </div>
   </div>
 </template>
@@ -104,7 +104,7 @@ form :deep(.input) {
 }
 
 .buttons button {
-  width: 30%;
+  flex: 1;
   padding: 0.5rem;
   border-radius: 0.5rem;
   border: none;
