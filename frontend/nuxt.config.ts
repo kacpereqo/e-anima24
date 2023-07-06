@@ -17,4 +17,9 @@ export default defineNuxtConfig({
       },
       "~/components",
     ],
+    runtimeConfig: {
+      public: {
+        API_URL: process.env.API_URL,
+      },
+    },
 })
