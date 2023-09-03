@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
     const avatarUrl = ref<string | null>(null)
 
     const accessToken = useCookie('token')
-    const isLogged = computed(() => {accessToken.value !== ''; console.log(accessToken.value)})
+    const isLogged = computed(() => accessToken.value !== '' && accessToken.value !== null && accessToken.value !== undefined)
 
     function logout() { 
       $reset();
