@@ -13,9 +13,15 @@
       </ul>
     </div>
 
-    <div class="user">user</div>
+    <div class="user">{{ store.is_logged }}</div>
   </nav>
 </template>
+
+<script setup lang="ts">
+import { useAuthStore } from "@/stores/authStore";
+
+const store = useAuthStore();
+</script>
 
 <style scoped>
 #navbar {

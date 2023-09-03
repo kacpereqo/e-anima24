@@ -3,6 +3,23 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
     modules: [
       '@nuxt/image',
-      "nuxt-icon"
-    ]
+      "nuxt-icon",
+      "@pinia/nuxt",
+      '@vueuse/nuxt',
+    ],
+    components: [
+
+      {
+        path: "~/components/steps",
+      },
+      {
+        path: "~/components/common",
+      },
+      "~/components",
+    ],
+    runtimeConfig: {
+      public: {
+        API_URL: process.env.API_URL,
+      },
+    },
 })
