@@ -12,6 +12,10 @@
 <script setup lang="ts"></script>
 
 <style>
+.error {
+  color: var(--error-color);
+}
+
 .auth-page {
   display: flex;
   flex: 1;
@@ -40,6 +44,19 @@ form {
   background-color: var(--second-color);
 }
 
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
 .more {
   display: flex;
   justify-content: center;
@@ -47,12 +64,12 @@ form {
   gap: 1rem;
 }
 
-.more button {
+.more .button {
   padding: 2rem;
   background-color: var(--major-color);
 }
 
-.more button:hover {
+.more .button:hover {
   background-color: var(--major-color--light);
   transition: 0.1s;
 }
@@ -67,11 +84,12 @@ input {
   border: none;
   border-radius: 0.5rem;
   background-color: var(--major-color);
+  width: 100%;
   color: var(--font-color);
   font-size: var(--font-size-3);
 }
 
-button {
+.button {
   display: flex;
   justify-content: center;
   align-items: center;

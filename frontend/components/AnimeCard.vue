@@ -1,7 +1,7 @@
 <template>
   <div class="anime-card">
     <div class="image-container">
-      <nuxt-img :src="imageUrl" alt="anime image" preload />
+      <nuxt-img :src="imageUrl" alt="anime image" />
     </div>
     <h3 class="title">
       <!-- {{ title }} -->

@@ -5,6 +5,7 @@ from db.database import db
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from utils.config import import_routes
 
 
@@ -21,6 +22,9 @@ def get_app() -> FastAPI:
     )
 
     import_routes(app)
+    app.add_middleware(
+        SessionMiddleware, secret_key="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"
+    )
     return app
 
 
@@ -40,4 +44,11 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8080"))
     debug = os.environ.get("DEBUG", True)
 
-    uvicorn.run("main:app", host=host, port=port, reload=True)
+    uvicorn.run(
+        "main:app",
+        host=host,
+        port=port,
+        reload=True,
+        ssl_keyfile="./key.pem",
+        ssl_certfile="./cert.pem",
+    )

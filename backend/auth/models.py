@@ -9,4 +9,6 @@ class Token(BaseModel):
 class User(BaseModel):
     username: str
     email: str
-    password: str
+    verifier: str
+    provider: str
+    avatar: str

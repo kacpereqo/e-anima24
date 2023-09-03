@@ -14,6 +14,7 @@ class DatabaseClient:
         self.session_local = sessionmaker(
             autocommit=False, autoflush=False, bind=self.engine
         )
+        self.migrate()
 
     def connection(func):
         def wrapper(self, *args, **kwargs):
@@ -42,19 +43,27 @@ class DatabaseClient:
         print("Migrated database successfully!")
 
     @connection
-    def get_user(self, session, username=None, email=None):
-        if username is None and email is None:
-            raise ValueError("Either username or email must be provided.")
+    def get_user_by_username(self, session, username):
+        user = session.query(User).filter(User.username == username).first()
+        return user
 
-        if username is None:
-            username = email
+    @connection
+    def get_user_by_email(self, session, email):
+        user = session.query(User).filter(User.email == email).first()
+        return user
 
-        elif email is None:
-            email = username
+    @connection
+    def get_user_by_id(self, session, user_id):
+        user = session.query(User).filter(User.user_id == user_id).first()
+        return user
 
+    @connection
+    def get_user_by_email_or_username(self, session, email_or_username):
         user = (
             session.query(User)
-            .filter(or_(User.username == username, User.email == email))
+            .filter(
+                or_(User.email == email_or_username, User.username == email_or_username)
+            )
             .first()
         )
         return user
@@ -70,11 +79,13 @@ class DatabaseClient:
         return bool(user)
 
     @connection
-    def add_new_user(self, session, user, hashed_password):
+    def add_new_user(self, session, user):
         db_user = User(
             username=user.username,
             email=user.email,
-            hashed_password=hashed_password,
+            provider=user.provider,
+            verifier=user.verifier,
+            avatar=user.avatar,
         )
 
         session.add(db_user)
