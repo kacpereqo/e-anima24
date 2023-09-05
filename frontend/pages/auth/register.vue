@@ -73,6 +73,9 @@
         <Icon name="logos:facebook" />
       </a>
     </div>
+    <div class="login">
+      Masz już konto? <NuxtLink to="/auth/login">Zaloguj się!</NuxtLink>
+    </div>
   </form>
 </template>
 
@@ -294,5 +297,14 @@ function submit() {
   color: var(--error-color);
   padding: 0;
   margin-left: 1rem;
+}
+
+.login {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.login a {
+  color: var(--accent-color);
 }
 </style>

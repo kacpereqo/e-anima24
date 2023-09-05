@@ -13,6 +13,11 @@ class UserRegister(BaseModel):
     verifier: str
 
 
+class UserLogin(BaseModel):
+    username: str
+    verifier: str
+
+
 class User(BaseModel):
     username: str
     email: str

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from starlette.requests import Request
 
 from .errors import incorect_credentials_error
-from .models import User, UserRegister
+from .models import User, UserLogin, UserRegister
 from .service import AuthService
 
 router = APIRouter()
@@ -14,8 +14,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 @router.post("/login")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = auth.authenticate_user(form_data.username, form_data.password)
+async def login_for_access_token(user: UserLogin):
+    user = auth.authenticate_user(user.username, user.verifier)
     if not user:
         raise incorect_credentials_error
     jwt = auth.create_access_token(data={"sub": user.user_id})

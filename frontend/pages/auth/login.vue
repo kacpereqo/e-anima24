@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" ref="form">
     <h2>Logowanie</h2>
     <div class="inputs">
       <div class="row">
@@ -10,8 +10,13 @@
         <label for="password">Hasło</label>
         <input type="password" name="password" v-model="password" />
       </div>
+
+      <div class="row">
+        <ul>
+          <li v-if="error" class="error">{{ error }}</li>
+        </ul>
+      </div>
     </div>
-    <div class="error" v-if="error">{{ error.data.detail }}</div>
     <button type="submit" class="sign-in button" ref="form">
       Zaloguj się!
     </button>
@@ -23,6 +28,9 @@
       <a class="button">
         <Icon name="logos:facebook" />
       </a>
+    </div>
+    <div class="register">
+      Nie masz konta? <NuxtLink to="/auth/register">Zarejestruj się!</NuxtLink>
     </div>
   </form>
 </template>
@@ -40,8 +48,8 @@ const router = useRouter();
 
 const username = ref("");
 const password = ref("");
-const data = ref();
 const error = ref();
+const form = ref<any>(null);
 
 const googleAuthUrl = computed(() => {
   const params = new URLSearchParams({
@@ -61,38 +69,64 @@ const googleAuthUrl = computed(() => {
 });
 
 async function submit() {
-  const { error: newError } = await useFetch(API_URL + "/auth/login", {
+  form.value.elements.username.classList.remove("inputError");
+  form.value.elements.password.classList.remove("inputError");
+
+  await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      "Content-Type": "application/json",
     },
-    body: new URLSearchParams({
+    body: JSON.stringify({
       username: username.value,
-      password: password.value,
+      verifier: password.value,
     }),
-    onResponse: (res) => {
-      const token = useCookie("token", {
-        watch: true,
-        maxAge: 60 * 60 * 24 * 30,
+  }).then((res) => {
+    if (res.status === 200) {
+      res.json().then((data) => {
+        const token = useCookie("token", {
+          watch: true,
+          maxAge: 60 * 60 * 24 * 30,
+        });
+
+        token.value = data.access_token;
+
+        const userStore = useUserStore();
+        userStore.userId = data.user.userId;
+        userStore.username = data.user.username;
+        userStore.email = data.user.email;
+        userStore.avatarUrl = data.user.avatar;
+
+        const notificationStore = useNotificationStore();
+        notificationStore.addNotification(NotificationType.succesfulLogin);
+
+        router.push("/");
       });
-
-      token.value = res.response._data.access_token;
-
-      const userStore = useUserStore();
-      userStore.userId = res.response._data.user.userId;
-      userStore.username = res.response._data.user.username;
-      userStore.email = res.response._data.user.email;
-      userStore.avatarUrl = res.response._data.user.avatar;
-
-      const notificationStore = useNotificationStore();
-      notificationStore.addNotification(NotificationType.succesfulLogin);
-
-      router.push("/");
-    },
-    onResponseError: (res) => {
-      console.log(res);
-    },
+    } else {
+      error.value = "Nieprawidłowy login lub hasło";
+      form.value.elements.username.classList.add("inputError");
+      form.value.elements.password.classList.add("inputError");
+    }
   });
-  error.value = newError.value;
 }
 </script>
+
+<style scoped>
+.error {
+  color: var(--error-color);
+  padding: 0;
+  margin-left: 1rem;
+}
+.register {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.register a {
+  color: var(--accent-color);
+}
+
+.inputError {
+  outline: 2px solid var(--error-color);
+}
+</style>
