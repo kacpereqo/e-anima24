@@ -8,9 +8,11 @@ from fastapi.security import OAuth2PasswordBearer
 from googleapiclient.discovery import build
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from starlette.responses import RedirectResponse
 
-from .errors import user_already_exists_error
+from .errors import (
+    user_with_email_already_exists_error,
+    user_with_username_already_exists_error,
+)
 from .models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -35,7 +37,7 @@ class AuthService:
         user = db.get_user_by_email_or_username(username)
         if user is None:
             return False
-        if not self.verify_password(password, user.hashed_password):
+        if not self.verify_password(password, user.verifier):
             return False
         return user
 
@@ -49,6 +51,7 @@ class AuthService:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+
         return encoded_jwt
 
     async def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
@@ -70,12 +73,21 @@ class AuthService:
         return user
 
     def register_new_user(self, new_user):
-        is_unique = db.check_unique_credentials(new_user.username, new_user.email)
-        if not is_unique:
-            raise user_already_exists_error
+        is_username_unique = db.get_user_by_username(new_user.username)
 
-        hashed_password = self.get_password_hash(new_user.password)
-        db.add_new_user(new_user, hashed_password)
+        if is_username_unique:
+            raise user_with_username_already_exists_error
+
+        is_email_unique = db.get_user_by_email(new_user.email)
+
+        if is_email_unique:
+            raise user_with_email_already_exists_error
+
+        new_user.verifier = self.get_password_hash(new_user.verifier)
+        db.add_new_user(new_user)
+
+        user = db.get_user_by_email(new_user.email)
+        return user
 
     def google_auth(self, request):
         state = request.session.get("state", None)

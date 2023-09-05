@@ -28,6 +28,12 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from "@/stores/userStore";
+import {
+  NotificationType,
+  useNotificationStore,
+} from "@/stores/notificationStore";
+
 const ENV = useRuntimeConfig().public;
 const API_URL = ENV.API_URL;
 const router = useRouter();
@@ -64,21 +70,29 @@ async function submit() {
       username: username.value,
       password: password.value,
     }),
-    // onResponse: (res) => {
-    //   const token = useCookie("token", {
-    //     watch: true,
-    //     maxAge: 60 * 60 * 24 * 30,
-    //   });
-    //   token.value = res.response._data.access_token;
+    onResponse: (res) => {
+      const token = useCookie("token", {
+        watch: true,
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    //   router.push("/");
-    // },
-    // onResponseError: (res) => {
-    //   console.log(res);
-    // },
+      token.value = res.response._data.access_token;
+
+      const userStore = useUserStore();
+      userStore.userId = res.response._data.user.userId;
+      userStore.username = res.response._data.user.username;
+      userStore.email = res.response._data.user.email;
+      userStore.avatarUrl = res.response._data.user.avatar;
+
+      const notificationStore = useNotificationStore();
+      notificationStore.addNotification(NotificationType.succesfulLogin);
+
+      router.push("/");
+    },
+    onResponseError: (res) => {
+      console.log(res);
+    },
   });
   error.value = newError.value;
-  // data.value = res;
-  // error.value = res.value;
 }
 </script>

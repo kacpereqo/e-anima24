@@ -1,132 +1,66 @@
 <template>
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" ref="form">
     <h2>Rejestracja</h2>
     <div class="inputs">
       <div class="row">
         <label for="username">Nazwa użytkownika</label>
-        <input type="text" name="username" v-model="username" />
+        <input type="text" name="username" v-model="formData.username" />
       </div>
       <div class="row">
         <label for="email">E-mail</label>
-        <input type="email" name="email" v-model="email" />
+        <input type="email" name="email" v-model="formData.email" />
       </div>
       <div class="row">
         <label for="password">Hasło</label>
         <div class="password-input">
           <Icon
-            v-show="password"
+            v-show="formData.password"
             :name="
-              showPassword ? 'heroicons-solid:eye' : 'heroicons-solid:eye-off'
+              formData.showPassword
+                ? 'heroicons-solid:eye'
+                : 'heroicons-solid:eye-off'
             "
             class="icon"
-            @click="showPassword = !showPassword"
+            @click="formData.showPassword = !formData.showPassword"
           />
 
           <input
-            @focus="showPasswordHint = true"
-            @blur="showPasswordHint = false"
-            :type="showPassword ? 'text' : 'password'"
+            :type="formData.showPassword ? 'text' : 'password'"
             name="password"
-            v-model="password"
-            @input="validatePasswordStrength"
+            v-model="formData.password"
           />
         </div>
-        <ul v-show="showPasswordHint" class="password-hint">
-          <li>
-            <Icon
-              :style="
-                passwordNeedings.length
-                  ? 'color: var(--accent-color)'
-                  : 'color: var(--error-color)'
-              "
-              :name="
-                passwordNeedings.length
-                  ? 'heroicons-solid:check'
-                  : 'heroicons-solid:x'
-              "
-            />8 znaków
-          </li>
-          <li>
-            <Icon
-              :style="
-                passwordNeedings.lowercase
-                  ? 'color: var(--accent-color)'
-                  : 'color: var(--error-color)'
-              "
-              :name="
-                passwordNeedings.lowercase
-                  ? 'heroicons-solid:check'
-                  : 'heroicons-solid:x'
-              "
-            />Mała litera
-          </li>
-          <li>
-            <Icon
-              :style="
-                passwordNeedings.uppercase
-                  ? 'color: var(--accent-color)'
-                  : 'color: var(--error-color)'
-              "
-              :name="
-                passwordNeedings.uppercase
-                  ? 'heroicons-solid:check'
-                  : 'heroicons-solid:x'
-              "
-            />Duża litera
-          </li>
-          <li>
-            <Icon
-              :style="
-                passwordNeedings.number
-                  ? 'color: var(--accent-color)'
-                  : 'color: var(--error-color)'
-              "
-              :name="
-                passwordNeedings.number
-                  ? 'heroicons-solid:check'
-                  : 'heroicons-solid:x'
-              "
-            />Cyfra
-          </li>
-          <li>
-            <Icon
-              :style="
-                passwordNeedings.special
-                  ? 'color: var(--accent-color)'
-                  : 'color: var(--error-color)'
-              "
-              :name="
-                passwordNeedings.special
-                  ? 'heroicons-solid:check'
-                  : 'heroicons-solid:x'
-              "
-            />Znak specjalny
-          </li>
-        </ul>
       </div>
       <div class="row">
         <label for="repeatPassword">Powtórz hasło</label>
         <div class="password-input">
           <Icon
-            v-show="repeatPassword"
+            v-show="formData.repeatPassword"
             :name="
-              showRepeatPassword
+              formData.showPassword
                 ? 'heroicons-solid:eye'
                 : 'heroicons-solid:eye-off'
             "
             class="icon"
-            @click="showRepeatPassword = !showRepeatPassword"
+            @click="formData.showPassword = !formData.showPassword"
           />
 
           <input
-            :type="showRepeatPassword ? 'text' : 'password'"
+            :type="formData.showPassword ? 'text' : 'password'"
             name="repeatPassword"
-            v-model="repeatPassword"
+            v-model="formData.repeatPassword"
           />
         </div>
       </div>
+
+      <div class="row">
+        <ul class="error">
+          <li v-for="(error, idx) in errors" :key="idx">
+            {{ error.data.error }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="error" v-if="error">{{ error.data.detail }}</div>
     <button type="submit" class="sign-in button" ref="form">
       Zarejestruj się
     </button>
@@ -143,59 +77,34 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from "@/stores/userStore";
+import {
+  NotificationType,
+  useNotificationStore,
+} from "@/stores/notificationStore";
+
 const ENV = useRuntimeConfig().public;
 const API_URL = ENV.API_URL;
 const router = useRouter();
 
-function validatePasswordStrength() {
-  if (password.value.length >= 8) {
-    passwordNeedings.length = true;
-  } else {
-    passwordNeedings.length = false;
-  }
-
-  if (/[a-z]/.test(password.value)) {
-    passwordNeedings.lowercase = true;
-  } else {
-    passwordNeedings.lowercase = false;
-  }
-
-  if (/[A-Z]/.test(password.value)) {
-    passwordNeedings.uppercase = true;
-  } else {
-    passwordNeedings.uppercase = false;
-  }
-
-  if (/[0-9]/.test(password.value)) {
-    passwordNeedings.number = true;
-  } else {
-    passwordNeedings.number = false;
-  }
-
-  if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password.value)) {
-    passwordNeedings.special = true;
-  } else {
-    passwordNeedings.special = false;
-  }
+interface registerError {
+  data: {
+    elementName: string;
+    error: string;
+  };
 }
 
-const passwordNeedings = {
-  length: false,
-  lowercase: false,
-  uppercase: false,
-  number: false,
-  special: false,
-};
-
-const username = ref("");
-const password = ref("");
-const repeatPassword = ref("");
 const data = ref();
-const error = ref();
-const email = ref("");
-const showPasswordHint = ref(false);
-const showPassword = ref(false);
-const showRepeatPassword = ref(false);
+const errors = ref<registerError[]>([]);
+const form = ref<any>(null);
+const formData = ref({
+  username: "kacperek",
+  password: "aaaaaaaaaaaaaaaaaaa",
+  repeatPassword: "aaaaaaaaaaaaaaaaaaa",
+  email: "a@a.com",
+  showPassword: false,
+});
+
 const googleAuthUrl = computed(() => {
   const params = new URLSearchParams({
     client_id: ENV.GOOGLE_OAUTH_CLIENT_ID,
@@ -213,7 +122,129 @@ const googleAuthUrl = computed(() => {
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 });
 
-function submit() {}
+function check() {
+  // Username
+
+  if (formData.value.username === "") {
+    errors.value.push({
+      data: {
+        elementName: "username",
+        error: "Nazwa użytkownika nie może być pusta",
+      },
+    });
+  }
+
+  // Email
+
+  if (formData.value.email === "") {
+    errors.value.push({
+      data: {
+        elementName: "email",
+        error: "E-mail nie może być pusty",
+      },
+    });
+  } else {
+    const emailRegex = new RegExp(
+      "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
+    );
+    if (!emailRegex.test(formData.value.email)) {
+      errors.value.push({
+        data: {
+          elementName: "email",
+          error: "E-mail jest niepoprawny",
+        },
+      });
+    }
+  }
+
+  // Password
+
+  if (formData.value.password === "") {
+    errors.value.push({
+      data: {
+        elementName: "password",
+        error: "Hasło nie może być puste",
+      },
+    });
+  } else if (formData.value.password.length < 8) {
+    errors.value.push({
+      data: {
+        elementName: "password",
+        error: "Hasło musi mieć co najmniej 8 znaków",
+      },
+    });
+  } else if (formData.value.password !== formData.value.repeatPassword) {
+    errors.value.push({
+      data: {
+        elementName: "repeatPassword",
+        error: "Hasła muszą być takie same",
+      },
+    });
+  }
+}
+
+function showErrors() {
+  for (const input of form.value.elements) {
+    input.classList.remove("inputError");
+    for (const error of errors.value) {
+      if (input.name === error.data.elementName) {
+        input.classList.add("inputError");
+      }
+    }
+  }
+}
+
+function submit() {
+  errors.value = [];
+  check();
+  showErrors();
+
+  if (errors.value.length > 0) {
+    return;
+  }
+
+  fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: formData.value.username,
+      email: formData.value.email,
+      provider: "auth",
+      verifier: formData.value.password,
+    }),
+  }).then((res) => {
+    if (res.status === 200) {
+      console.log("Registered");
+      res.json().then((data) => {
+        const token = useCookie("token", {
+          sameSite: "lax",
+          watch: true,
+          maxAge: 60 * 60 * 24 * 30,
+        });
+
+        token.value = data.access_token;
+
+        const userStore = useUserStore();
+        userStore.userId = data.user.userId;
+        userStore.username = data.user.username;
+        userStore.email = data.user.email;
+        userStore.avatarUrl = data.user.avatar;
+
+        const notificationStore = useNotificationStore();
+        notificationStore.addNotification(NotificationType.succesfulRegister);
+
+        router.push("/");
+      });
+    } else {
+      res.json().then((data) => {
+        errors.value.push(data.detail);
+        showErrors();
+      });
+    }
+  });
+}
 </script>
 
 <style scoped>
@@ -255,5 +286,13 @@ function submit() {}
   right: 1rem;
   transform: translateY(-50%);
   cursor: pointer;
+}
+.inputError {
+  outline: 2px solid var(--error-color);
+}
+.error {
+  color: var(--error-color);
+  padding: 0;
+  margin-left: 1rem;
 }
 </style>

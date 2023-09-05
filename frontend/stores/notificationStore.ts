@@ -9,6 +9,7 @@ interface Notification {
 export enum NotificationType {
     succesfulLogin = "succesfulLogin",
     succesfulLogout = "succesfulLogout",
+    succesfulRegister = "succesfulRegister",
 }
 
 export const useNotificationStore = defineStore('notfications', () => {
@@ -30,6 +31,12 @@ export const useNotificationStore = defineStore('notfications', () => {
                     type: "success",
                 })
                 break;
+            case NotificationType.succesfulRegister:
+                notifications.value.push({
+                    message: "Zostałeś pomyślnie zarejestrowany",
+                    title: "Zarejestrowano",
+                    type: "success",
+                })
     }}
 
     function removeNotification(idx: number) {

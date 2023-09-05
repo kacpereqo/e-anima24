@@ -80,13 +80,23 @@ class DatabaseClient:
 
     @connection
     def add_new_user(self, session, user):
-        db_user = User(
-            username=user.username,
-            email=user.email,
-            provider=user.provider,
-            verifier=user.verifier,
-            avatar=user.avatar,
-        )
+        if user.provider == "google":
+            db_user = User(
+                username=user.username,
+                email=user.email,
+                provider=user.provider,
+                verifier=user.verifier,
+                avatar=user.avatar,
+            )
+
+        if user.provider == "auth":
+            db_user = User(
+                username=user.username,
+                email=user.email,
+                provider=user.provider,
+                verifier=user.verifier,
+                avatar="https://www.zooplus.pl/magazyn/wp-content/uploads/2020/02/welsh-corgi-pembroke-768x512.jpeg",
+            )
 
         session.add(db_user)
         session.commit()
