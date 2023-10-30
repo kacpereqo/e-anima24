@@ -2,6 +2,7 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
+  ssr: false,
   devtools: { enabled: true },
     modules: [
       '@nuxt/image',

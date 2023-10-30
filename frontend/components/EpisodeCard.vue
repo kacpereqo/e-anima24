@@ -1,5 +1,6 @@
 <template>
   <div class="episode-card">
+    <div class="info"></div>
     <img :src="imgUrl" alt="episode cover" />
   </div>
 </template>

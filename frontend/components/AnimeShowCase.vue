@@ -1,6 +1,6 @@
 <template>
   <div class="showcase">
-    <h2 class="title" @mouseenter="titleAnimation" ref="title">
+    <h2 class="title">
       <Icon class="icon" :name="icon" />
       <span>{{ category }}</span>
     </h2>
@@ -28,10 +28,6 @@ const icon = computed(() => {
       return "material-symbols:auto-awesome-rounded";
   }
 });
-
-function titleAnimation() {
-  if (!title.value) return;
-}
 
 const props = defineProps<{
   category: category;

@@ -14,5 +14,5 @@ export const useAddAnimeFormStore = defineStore('addAnimeForm', () => {
 
     const iframe           = ref<string>('')
   
-    return { title, description, series, shortDescription, season, episode, tags, genres}
+    return { title, description, series, shortDescription, season, episode, tags, genres, iframe}
   })

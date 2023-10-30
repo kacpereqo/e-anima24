@@ -2,9 +2,9 @@
   <div class="index-page">
     <TheFeaturedAnime />
     <div class="anime-showcase-list">
+      <AnimeShowCaseNew />
       <AnimeShowCase category="popular" />
       <AnimeShowCase category="trending" />
-      <AnimeShowCase category="new" />
     </div>
   </div>
 </template>

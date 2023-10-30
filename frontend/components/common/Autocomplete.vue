@@ -50,6 +50,7 @@ const props = defineProps<{
   };
 }>();
 
+const data = ref([""]);
 const active = ref(-1);
 const matches = ref([] as string[]);
 const show = ref(false);
@@ -66,9 +67,17 @@ function enterHandler() {
   }
 }
 
+// watch for data changes
+
+watch(
+  () => props.data,
+  () => {
+    change();
+  }
+);
 function change() {
   if (store.series.length > 0) {
-    matches.value = props.data.filter((item) => {
+    matches.value = props.data.filter((item: string) => {
       return item.toLowerCase().indexOf(store.series.toLowerCase()) > -1;
     });
   } else {
@@ -121,11 +130,12 @@ input {
 
 ul {
   position: absolute;
-  top: 100%;
+  top: calc(100% - 0.1rem);
   left: 0;
   width: 100%;
   background-color: var(--major-color--light);
-  border-radius: 0.25rem;
+  box-shadow: 1rem 1rem 1rem 0.2rem rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 0.25rem 0.25rem;
   padding: 0.5rem;
   list-style: none;
   z-index: 1000;

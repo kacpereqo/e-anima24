@@ -1,80 +1,82 @@
 <template>
-  <nav id="navbar">
-    <div class="logo">
-      <img src="@/assets/logo.png" />
-      <h1>e-anima24</h1>
-    </div>
-
-    <div>
-      <ul class="routes">
-        <li>
-          <router-link to="/">Home</router-link>
-        </li>
-        <li>
-          <router-link to="#">Anime</router-link>
-        </li>
-        <li>
-          <router-link to="#">Manga</router-link>
-        </li>
-      </ul>
-    </div>
-
-    <div class="user">
-      <div v-if="!userStore.isLogged" class="not-loggedin">
-        <a href="/auth/login" class="login">Zaloguj</a>
-        <a href="/auth/register" class="register">Zarejestruj</a>
+  <div class="navbar-wrapper">
+    <nav id="navbar" ref="navbar">
+      <div class="logo">
+        <img src="@/assets/logo.png" />
+        <h1>e-anima24</h1>
       </div>
-      <div class="loggedin" v-else>
-        <div class="avatar">
-          <div v-show="userStore.avatarUrl === null" class="loading" />
-          <img
-            v-show="userStore.avatarUrl !== null"
-            :src="userStore.avatarUrl!"
-            ref="avatar"
-            referrerpolicy="no-referrer"
-          />
-        </div>
-        <Icon
-          @click="showDropdown = !showDropdown"
-          name="material-symbols:keyboard-arrow-down-rounded"
-          class="icon"
-          @mouseenter="showDropdown = true"
-          @mouseleave="showDropdown = false"
-        />
-        <ul
-          v-if="debounced"
-          class="dropdown"
-          @mouseenter="showDropdown = true"
-          @mouseleave="showDropdown = false"
-        >
+
+      <div>
+        <ul class="routes">
           <li>
-            <router-link to="">
-              <Icon name="material-symbols:person-2-rounded" />
-              <span> Profil </span>
-            </router-link>
+            <router-link to="/">Home</router-link>
           </li>
           <li>
-            <router-link to="">
-              <Icon name="material-symbols:space-dashboard-rounded" />
-              <span> Panel </span>
-            </router-link>
+            <router-link to="#">Anime</router-link>
           </li>
           <li>
-            <router-link to="">
-              <Icon name="material-symbols:settings-outline-rounded" />
-              <span> Ustawienia </span>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="" @click="userStore.logout">
-              <Icon name="material-symbols:logout-rounded" />
-              <span> Wyloguj </span>
-            </router-link>
+            <router-link to="#">Manga</router-link>
           </li>
         </ul>
       </div>
-    </div>
-  </nav>
+
+      <div class="user">
+        <div v-if="!userStore.isLogged" class="not-loggedin">
+          <a href="/auth/login" class="login">Zaloguj</a>
+          <a href="/auth/register" class="register">Zarejestruj</a>
+        </div>
+        <div class="loggedin" v-else>
+          <div class="avatar">
+            <div v-show="userStore.avatarUrl === null" class="loading" />
+            <img
+              v-show="userStore.avatarUrl !== null"
+              :src="userStore.avatarUrl!"
+              ref="avatar"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+          <Icon
+            @click="showDropdown = !showDropdown"
+            name="material-symbols:keyboard-arrow-down-rounded"
+            class="icon"
+            @mouseenter="showDropdown = true"
+            @mouseleave="showDropdown = false"
+          />
+          <ul
+            v-if="debounced"
+            class="dropdown"
+            @mouseenter="showDropdown = true"
+            @mouseleave="showDropdown = false"
+          >
+            <li>
+              <router-link to="">
+                <Icon name="material-symbols:person-2-rounded" />
+                <span> Profil </span>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/dashboard">
+                <Icon name="material-symbols:space-dashboard-rounded" />
+                <span> Panel </span>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="">
+                <Icon name="material-symbols:settings-outline-rounded" />
+                <span> Ustawienia </span>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="" @click="userStore.logout">
+                <Icon name="material-symbols:logout-rounded" />
+                <span> Wyloguj </span>
+              </router-link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -105,6 +107,9 @@ onMounted(() => {
 
 <style scoped>
 #navbar {
+  box-shadow: 0 0 1rem 1rem rgba(10, 10, 10, 0.1);
+  top: 0;
+  left: 0;
   height: var(--navbar-height);
   width: 100%;
   background-color: var(--second-color);
@@ -112,9 +117,14 @@ onMounted(() => {
   display: flex;
   padding: 0 1rem;
   justify-content: space-between;
-  position: relative;
+  position: fixed;
   align-items: center;
   z-index: 1000;
+}
+
+.navbar-wrapper {
+  height: var(--navbar-height);
+  width: 100%;
 }
 
 .routes {

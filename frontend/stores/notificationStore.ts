@@ -10,6 +10,7 @@ export enum NotificationType {
     succesfulLogin = "succesfulLogin",
     succesfulLogout = "succesfulLogout",
     succesfulRegister = "succesfulRegister",
+    succesfulVideoAdd = "succesfulVideoAdd",
 }
 
 export const useNotificationStore = defineStore('notfications', () => {
@@ -37,6 +38,14 @@ export const useNotificationStore = defineStore('notfications', () => {
                     title: "Zarejestrowano",
                     type: "success",
                 })
+                break;
+            case NotificationType.succesfulVideoAdd:
+                notifications.value.push({
+                    message: "Zostałeś pomyślnie dodany film",
+                    title: "Dodano film",
+                    type: "success",
+                })
+                break;
     }}
 
     function removeNotification(idx: number) {
